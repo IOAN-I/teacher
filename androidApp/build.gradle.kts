@@ -50,5 +50,6 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
     implementation(libs.androidx.ui.android)
     implementation(libs.androidx.ui.tooling.preview.android)
+    implementation(libs.androidx.ui.text.google.fonts)
     debugImplementation(libs.compose.ui.tooling)
 }
