@@ -19,13 +19,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -48,6 +50,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -75,7 +78,19 @@ class MainActivity : ComponentActivity() {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
-                        App(Modifier.padding(innerPadding))
+//                        App(Modifier.padding(innerPadding))
+                        Column(
+                            modifier = Modifier.padding(horizontal = 12.dp)
+                                .verticalScroll(rememberScrollState()),
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            HomeScreen()
+                            HomeScreen()
+                            HomeScreen()
+                            HomeScreen()
+                            HomeScreen()
+                        }
+
                     }
                 }
             }
@@ -227,78 +242,108 @@ fun CoverImage(
 
 @Composable
 fun HomeScreen() {
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
-        ),
+    ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
-            .height(300.dp)
+            .height(160.dp),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 3.dp
+        ),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.onSecondary,
+        )
     ) {
-        Row(
-            modifier = Modifier
-                .padding(16.dp),
-        ) {
-            Column(
+        Column {
+            Row(
                 modifier = Modifier
-                    .padding(12.dp),
-                verticalArrangement = Arrangement.spacedBy(5.dp)
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text = "Sayumi Mayerly Zola Huanca",
-                    textAlign = TextAlign.Center
-                )
                 Text(
                     text = "Entrevista",
                     textAlign = TextAlign.Center,
-                    fontSize = 12.sp
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
-                Text(
-                    text = "Prueba de reunión",
-                    textAlign = TextAlign.Center,
-                    fontSize = 12.sp
-                )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Image(
-                        modifier = Modifier.size(18.dp),
-                        painter = painterResource(id = R.drawable.comment_eye_outline),
-                        contentDescription = "")
-                    Text(
-                        text = "Sin observación",
-                        fontSize = 12.sp
-                        )
-                }
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Image(
-                        modifier = Modifier.size(18.dp),
-                        painter = painterResource(id = R.drawable.calendar_check_outline),
-                        contentDescription = "Realizado"
-                    )
-                    Text(
-                        text = "Sin observación",
-                        fontSize = 12.sp
-                        )
-                }
-            }
-            Column(
-                modifier = Modifier
-                    .padding(12.dp),
-                horizontalAlignment = Alignment.End
-            ) {
                 Text(
                     text = "03 jun 2024",
-                    modifier = Modifier,
                     textAlign = TextAlign.Center,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
-                Text(
-                    text = "10:25",
-                    modifier = Modifier,
-                    textAlign = TextAlign.Center,
-                )
+            }
+            Row(
+                modifier = Modifier
+                    .padding(horizontal = 12.dp),
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(5.dp)
+                ) {
+                    Text(
+                        text = "Sayumi Mayerly Zola Huanca",
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = "Prueba de reunión",
+                            textAlign = TextAlign.Center,
+                            fontSize = 14.sp,
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                        Text(
+                            text = "10:25 am",
+                            modifier = Modifier,
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                    }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            modifier = Modifier
+                                .padding(end = 3.dp)
+                                .size(18.dp),
+                            painter = painterResource(
+                                id = R.drawable.comment_eye_outline,
+                            ),
+                            tint = MaterialTheme.colorScheme.primary,
+                            contentDescription = "")
+                        Text(
+                            text = "Sin observación",
+                            fontSize = 12.sp
+                        )
+                    }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            modifier = Modifier
+                                .padding(end = 3.dp)
+                                .size(18.dp),
+                            painter = painterResource(
+                                id = R.drawable.calendar_check_outline
+                            ),
+                            tint = MaterialTheme.colorScheme.primary,
+                            contentDescription = "Realizado"
+                        )
+                        Text(
+                            text = "Sin observación",
+                            fontSize = 12.sp
+                        )
+                    }
+                }
             }
         }
     }
@@ -307,7 +352,7 @@ fun HomeScreen() {
 @Preview
 @Composable
 fun DefaultPreview() {
-    MaterialTheme {
+    TeacherTheme {
 //        App()
         HomeScreen()
     }
