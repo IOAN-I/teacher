@@ -30,6 +30,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -57,40 +59,60 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.teacher.educamobile.android.ui.theme.TeacherTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val navController = rememberNavController()
             TeacherTheme {
-//                Surface(
-//                    modifier = Modifier.fillMaxSize(),
-//                    color = MaterialTheme.colorScheme.background
-//                ) {
-//                    App()
-//                }
-                Scaffold { innerPadding ->
-                    Column(
-                        modifier = Modifier
-                            .padding(innerPadding)
-                            .fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-//                        App(Modifier.padding(innerPadding))
-                        Column(
-                            modifier = Modifier.padding(horizontal = 12.dp)
-                                .verticalScroll(rememberScrollState()),
-                            verticalArrangement = Arrangement.spacedBy(10.dp)
-                        ) {
-                            HomeScreen()
-                            HomeScreen()
-                            HomeScreen()
-                            HomeScreen()
-                            HomeScreen()
-                        }
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentRoute = navBackStackEntry?.destination?.route
 
+                val bottomNavigationItems = listOf(
+                    NavItem.Meetings,
+                    NavItem.Attendance,
+                    NavItem.Notifications
+                )
+
+                val bottomBarRoutes = setOf("A", "B", "C")
+
+                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+                    Scaffold(
+                        bottomBar = {
+                            if (currentRoute in bottomBarRoutes) {
+                                NavigationBar {
+                                    bottomNavigationItems.forEach { item ->
+                                        NavigationBarItem(
+                                            icon = {
+                                                Icon(
+                                                    painter = painterResource(id = item.icon),
+                                                    contentDescription = null
+                                                )
+                                            },
+                                            label = { Text(item.title) },
+                                            selected = currentRoute == item.route,
+                                            onClick = {
+                                                if (currentRoute != item.route) {
+                                                    navController.navigate(item.route) {
+                                                        popUpTo(navController.graph.startDestinationId)
+                                                        launchSingleTop = true
+                                                    }
+                                                }
+                                            }
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    ) { innerPadding ->
+                        AppNavigation(modifier = Modifier.padding(innerPadding), navController = navController)
                     }
                 }
             }
@@ -241,7 +263,12 @@ fun CoverImage(
 }
 
 @Composable
-fun HomeScreen() {
+fun MeetingCard(
+    navController: NavHostController
+) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -349,11 +376,39 @@ fun HomeScreen() {
     }
 }
 
+@Composable
+fun MeetingScreen() {
+    Column(
+        modifier = Modifier
+            .padding(horizontal = 12.dp)
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+//        MeetingCard()
+//        MeetingCard()
+//        MeetingCard()
+//        MeetingCard()
+//        MeetingCard()
+    }
+}
+
+@Composable
+fun AppNavigation(
+    modifier: Modifier = Modifier,
+    navController: NavHostController
+) {
+    NavHost(navController = navController, startDestination = "A" ) {
+        composable("A") { MeetingCard(navController) }
+        composable("B") { App() }
+        composable("C") { App() }
+    }
+}
+
 @Preview
 @Composable
 fun DefaultPreview() {
     TeacherTheme {
 //        App()
-        HomeScreen()
+//        MeetingCard()
     }
 }

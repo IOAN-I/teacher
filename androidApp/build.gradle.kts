@@ -51,5 +51,6 @@ dependencies {
     implementation(libs.androidx.ui.android)
     implementation(libs.androidx.ui.tooling.preview.android)
     implementation(libs.androidx.ui.text.google.fonts)
+    implementation(libs.androidx.navigation.compose)
     debugImplementation(libs.compose.ui.tooling)
 }
