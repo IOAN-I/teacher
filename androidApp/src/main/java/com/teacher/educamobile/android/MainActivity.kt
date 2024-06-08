@@ -1,24 +1,31 @@
 package com.teacher.educamobile.android
 
-import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,26 +34,43 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.teacher.educamobile.android.ui.theme.TeacherTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MyApplicationTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    App()
+            TeacherTheme {
+//                Surface(
+//                    modifier = Modifier.fillMaxSize(),
+//                    color = MaterialTheme.colorScheme.background
+//                ) {
+//                    App()
+//                }
+                Scaffold { innerPadding ->
+                    Column(
+                        modifier = Modifier
+                            .padding(innerPadding)
+                            .fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        App(Modifier.padding(innerPadding))
+                    }
                 }
             }
         }
@@ -54,20 +78,75 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun App(mainViewModel: MainViewModel = viewModel()) {
-    MaterialTheme {
+fun App(
+    modifier: Modifier = Modifier,
+    mainViewModel: MainViewModel = viewModel()
+) {
+    TeacherTheme(
+
+    ) {
         CompositionLocalProvider(
             androidx.lifecycle.compose.LocalLifecycleOwner provides androidx.compose.ui.platform.LocalLifecycleOwner.current
         ) {
-            val greetings by mainViewModel.greetingList.collectAsStateWithLifecycle()
+//            val greetings by mainViewModel.greetingList.collectAsStateWithLifecycle()
+//
+//            Column(
+//                modifier = Modifier.padding(all = 20.dp),
+//                verticalArrangement = Arrangement.spacedBy(8.dp),
+//            ) {
+//                greetings.forEach { greeting ->
+//                    Text(greeting)
+//                    HorizontalDivider()
+//                }
+//            }
+            val transition = rememberInfiniteTransition(label = "")
+            val animatedProgress by transition.animateFloat(
+                initialValue = 0f,
+                targetValue = 1f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(1500, easing = LinearEasing),
+                    repeatMode = RepeatMode.Restart
+                ), label = ""
+            )
+            val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+            val density = LocalDensity.current
 
+            val brush = Brush.verticalGradient(
+                colors = listOf(
+                    MaterialTheme.colorScheme.inversePrimary,
+//                    MaterialTheme.colorScheme.surfaceTint
+                ),
+                startY = 0f,
+//                endY = with(density) { screenHeight.toPx() * animatedProgress })
+                endY = with(density) { screenHeight.toPx()})
+
+            val reusableModifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp, vertical = 5.dp)
             Column(
-                modifier = Modifier.padding(all = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = modifier
+                    .background(color = MaterialTheme.colorScheme.secondaryContainer),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                greetings.forEach { greeting ->
-                    Text(greeting)
-                    HorizontalDivider()
+                CoverImage(Modifier.weight(0.7f))
+                Column(
+                    Modifier
+                        .fillMaxSize()
+                        .weight(1f)
+//                    verticalArrangement = Arrangement.spacedBy(5.dp)
+                    ) {
+                    LoginTextInput(
+                        modifier = reusableModifier,
+                        label = "Usuario",
+                        leadingIcon = Icons.Default.AccountCircle
+                    )
+                    LoginTextInput(
+                        modifier = reusableModifier,
+                        label = "Contraseña",
+                        leadingIcon = Icons.Default.Lock,
+                        trailingIcon = ImageVector.vectorResource(R.drawable.eye)
+                    )
+                    LoginButton(reusableModifier.padding(vertical = 10.dp))
                 }
             }
         }
@@ -85,10 +164,7 @@ fun LoginTextInput(
     var text by remember { mutableStateOf(TextFieldValue("")) }
 
     OutlinedTextField(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp)
-            .height(50.dp),
+        modifier = modifier,
         value = text,
         label = { Text(text = label) },
         onValueChange = { newText ->
@@ -111,28 +187,42 @@ fun LoginTextInput(
     )
 }
 
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_NO
-)
 @Composable
-fun InputPreview() {
-    Column {
-        LoginTextInput(
-            label = "Usuario",
-            leadingIcon = Icons.Default.AccountCircle
-            )
-        LoginTextInput(
-            label = "Contraseña",
-            leadingIcon = Icons.Default.Lock,
-            trailingIcon = ImageVector.vectorResource(R.drawable.eye)
-            )
+fun LoginButton(
+    modifier: Modifier = Modifier,
+) {
+    Button(
+        modifier = modifier,
+        onClick = { /*TODO*/ },
+//        colors = ButtonColors()
+    ) {
+        Text(text = "Ingresar")
+    }
+}
+
+@Composable
+fun CoverImage(
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 10.dp, vertical = 50.dp),
+    ) {
+        Image(
+            modifier = modifier.fillMaxWidth(),
+            contentScale = ContentScale.FillWidth,
+            painter = painterResource(R.drawable.ic_school_cover),
+            contentDescription = "",
+        )
+
     }
 }
 
 @Preview
 @Composable
 fun DefaultPreview() {
-    MyApplicationTheme {
+    MaterialTheme {
         App()
     }
 }
