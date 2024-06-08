@@ -13,8 +13,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -22,6 +24,8 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -45,8 +49,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.teacher.educamobile.android.ui.theme.TeacherTheme
 
@@ -219,10 +225,90 @@ fun CoverImage(
     }
 }
 
+@Composable
+fun HomeScreen() {
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+        ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(300.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(16.dp),
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(12.dp),
+                verticalArrangement = Arrangement.spacedBy(5.dp)
+            ) {
+                Text(
+                    text = "Sayumi Mayerly Zola Huanca",
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = "Entrevista",
+                    textAlign = TextAlign.Center,
+                    fontSize = 12.sp
+                )
+                Text(
+                    text = "Prueba de reunión",
+                    textAlign = TextAlign.Center,
+                    fontSize = 12.sp
+                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        modifier = Modifier.size(18.dp),
+                        painter = painterResource(id = R.drawable.comment_eye_outline),
+                        contentDescription = "")
+                    Text(
+                        text = "Sin observación",
+                        fontSize = 12.sp
+                        )
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        modifier = Modifier.size(18.dp),
+                        painter = painterResource(id = R.drawable.calendar_check_outline),
+                        contentDescription = "Realizado"
+                    )
+                    Text(
+                        text = "Sin observación",
+                        fontSize = 12.sp
+                        )
+                }
+            }
+            Column(
+                modifier = Modifier
+                    .padding(12.dp),
+                horizontalAlignment = Alignment.End
+            ) {
+                Text(
+                    text = "03 jun 2024",
+                    modifier = Modifier,
+                    textAlign = TextAlign.Center,
+                )
+                Text(
+                    text = "10:25",
+                    modifier = Modifier,
+                    textAlign = TextAlign.Center,
+                )
+            }
+        }
+    }
+}
+
 @Preview
 @Composable
 fun DefaultPreview() {
     MaterialTheme {
-        App()
+//        App()
+        HomeScreen()
     }
 }
